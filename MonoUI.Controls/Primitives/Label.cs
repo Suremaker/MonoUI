@@ -4,13 +4,13 @@ using MonoUI.Core.Views;
 
 namespace MonoUI.Controls.Primitives
 {
-    public class Label : Control<ILabelView>
+    public class Label : Control<Label.ILabelView>
     {
-        public Property<string> Text { get { return View.Text; } }
-    }
+        public interface ILabelView : IControlView
+        {
+            Property<string> Text { get; }
+        }
 
-    public interface ILabelView : IControlView
-    {
-        Property<string> Text { get; }
+        public Property<string> Text { get { return View.Text; } }
     }
 }

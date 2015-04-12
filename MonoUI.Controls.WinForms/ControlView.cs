@@ -9,42 +9,35 @@ namespace MonoUI.Controls.WinForms
 {
     public abstract class ControlView : IWinFormsControlView
     {
-        private readonly Canvas _canvas;
         private readonly Property<Size> _preferredSize;
+        public event Action OnBeforeDispose;
         public Property<Alignment> Alignment { get; private set; }
-
-        public IWinFormsControlView Parent { get; set; }
-
-        public ReadOnlyProperty<Size> PreferredSize
-        {
-            get { return _preferredSize; }
-        }
-
+        public abstract IEnumerable<Control> GetControls();
+        public IWinFormsContainer Parent { get; set; }
+        public ReadOnlyProperty<Size> PreferredSize { get { return _preferredSize; } }
         public Property<Rectangle> ActualBounds { get; private set; }
+        public abstract void Invalidate();
 
-        public ControlView()
+        protected ControlView()
         {
-            _canvas = new Canvas(OnPaint);
-            _preferredSize = Properties.Create<Size>(OnPreferredSizeChange);
-            ActualBounds = Properties.Create<Rectangle>(UpdateCanvasBounds);
-            Alignment = Properties.Create<Alignment>(e => UpdateOwnLayout());
+            _preferredSize = Properties.Create<Size>(e => RequestSizeRecalculation());
+            ActualBounds = Properties.Create<Rectangle>();
+            Alignment = Properties.Create<Alignment>(e => RequestLayout());
         }
 
-        private void OnPreferredSizeChange(PropertyChangedEvent<Size> e)
+        protected void RequestSizeRecalculation()
         {
             if (Parent != null)
-                Parent.UpdateOwnLayout();
+                Parent.RecalculateSize();
         }
 
-        private void UpdateCanvasBounds(PropertyChangedEvent<Rectangle> e)
+        protected void RequestLayout()
         {
-            _canvas.SetBounds(e.NewValue.X, e.NewValue.Y, e.NewValue.Width, e.NewValue.Height);
+            if (Parent != null)
+                Parent.LayoutChildren();
         }
 
-        protected abstract void OnPaint(PaintEventArgs e);
-        public void Invalidate() { _canvas.Invalidate(); }
-
-        public void UpdateOwnLayout()
+        protected void RecalculatePreferredSize()
         {
             _preferredSize.Value = MeasurePreferredSize();
         }
@@ -53,12 +46,7 @@ namespace MonoUI.Controls.WinForms
 
         public void Dispose()
         {
-            _canvas.Dispose();
-        }
-
-        public IEnumerable<Control> GetControls()
-        {
-            yield return _canvas;
+            OnBeforeDispose.Fire();
         }
     }
 }

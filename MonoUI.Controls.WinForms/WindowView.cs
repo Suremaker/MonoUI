@@ -1,29 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using MonoUI.Core;
 using MonoUI.Core.Observables;
 using MonoUI.Core.Views;
+using HorizontalAlignment = MonoUI.Core.Views.HorizontalAlignment;
 
 namespace MonoUI.Controls.WinForms
 {
-    public partial class WindowView : Form, IWinFormsControlView, IWindowView
+    public class WindowView : Window.IWindowView, IWinFormsContainer
     {
-        private readonly Property<Size> _preferredSize;
+        private readonly Form _form;
+        public Property<IControl> Content { get; private set; }
+        public Property<Alignment> Alignment { get; private set; }
 
         public WindowView()
         {
-            InitializeComponent();
-            Content = Properties.Create<IControl>(OnContentChange);
+            _form = new Form();
+            _form.Resize += (o, e) => LayoutChildren();
             Alignment = Properties.Create<Alignment>();
-            _preferredSize = Properties.Create<Size>();
-            ActualBounds = Properties.Create<Rectangle>();
-            Resize += (o, e) => ActualBounds.Value = Bounds;
+            Content = Properties.Create<IControl>(OnContentChange);
         }
 
         private void OnContentChange(PropertyChangedEvent<IControl> e)
@@ -33,49 +30,58 @@ namespace MonoUI.Controls.WinForms
 
             var winFormsControlView = e.NewValue.GetWinFormsView();
 
-            Controls.AddRange(winFormsControlView.GetControls().ToArray());
+            _form.Controls.AddRange(winFormsControlView.GetControls().ToArray());
             winFormsControlView.Parent = this;
-            UpdateOwnLayout();
+            RecalculateSize();
         }
 
-        void IWindowView.Show()
+        public void Show()
         {
-            ShowDialog();
+            _form.ShowDialog();
         }
 
-        public Property<IControl> Content { get; private set; }
-        public Property<Alignment> Alignment { get; private set; }
-        public IEnumerable<Control> GetControls()
-        {
-            yield return this;
-        }
-
-        public new IWinFormsControlView Parent { get { return null; } set { throw new NotSupportedException("Window cannot have parent"); } }
-
-        public new ReadOnlyProperty<Size> PreferredSize
-        {
-            get { return _preferredSize; }
-        }
-
-        public Property<Rectangle> ActualBounds { get; private set; }
-        public void UpdateOwnLayout()
+        public void LayoutChildren()
         {
             if (Content.Value == null)
-            {
-                _preferredSize.Value = new Size();
                 return;
-            }
-            var content = Content.Value.GetWinFormsView();
-            _preferredSize.Value = content.PreferredSize;
-            content.ActualBounds.Value = new Rectangle(new Point(0, 0), _preferredSize.Value);
-        }
-    }
 
-    internal static class IControlExternsions
-    {
-        public static IWinFormsControlView GetWinFormsView(this IControl control)
+            var view = Content.Value.GetWinFormsView();
+            Size preferred = view.PreferredSize;
+            var horizontalAlignment = view.Alignment.Value.Horizontal;
+            var verticalAlignment = view.Alignment.Value.Vertical;
+
+            var clientWidth = _form.ClientSize.Width;
+            var clientHeight = _form.ClientSize.Height;
+            int x = clientWidth - preferred.Width;
+            int y = clientHeight - preferred.Height;
+
+            if (x < 0 || horizontalAlignment == HorizontalAlignment.Left)
+                x = 0;
+            else if (horizontalAlignment == HorizontalAlignment.Center)
+                x /= 2;
+
+            if (y < 0 || verticalAlignment == VerticalAlignment.Top)
+                y = 0;
+            else if (verticalAlignment == VerticalAlignment.Center)
+                y /= 2;
+
+            view.ActualBounds.Value = new Rectangle(x, y, Math.Min(clientWidth, preferred.Width), Math.Min(clientHeight, preferred.Height));
+        }
+
+        public void RecalculateSize()
         {
-            return (IWinFormsControlView)control.View;
+            if (Content.Value == null)
+                return;
+            Size preferredSize = Content.Value.GetWinFormsView().PreferredSize;
+            if (_form.ClientSize != preferredSize)
+                _form.ClientSize = preferredSize;
+            else
+                LayoutChildren();
+        }
+
+        public void Dispose()
+        {
+            _form.Dispose();
         }
     }
 }

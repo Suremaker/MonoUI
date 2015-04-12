@@ -2,10 +2,11 @@ using System.Drawing;
 using System.Windows.Forms;
 using MonoUI.Controls.Primitives;
 using MonoUI.Core.Observables;
+using Label = MonoUI.Controls.Primitives.Label;
 
 namespace MonoUI.Controls.WinForms
 {
-    public class LabelView : ControlView, ILabelView
+    public class LabelView : DrawableControlView, Label.ILabelView
     {
         public Property<string> Text { get; private set; }
 
@@ -14,7 +15,7 @@ namespace MonoUI.Controls.WinForms
 
         public LabelView()
         {
-            Text = Properties.Create<string>(e => UpdateOwnLayout());
+            Text = Properties.Create<string>(e => RecalculatePreferredSize());
         }
 
         protected override void OnPaint(PaintEventArgs e)
