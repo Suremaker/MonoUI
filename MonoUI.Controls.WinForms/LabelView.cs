@@ -1,6 +1,5 @@
 using System.Drawing;
 using System.Windows.Forms;
-using MonoUI.Controls.Primitives;
 using MonoUI.Core.Observables;
 using Label = MonoUI.Controls.Primitives.Label;
 

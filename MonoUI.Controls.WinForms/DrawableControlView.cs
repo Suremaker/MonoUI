@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using MonoUI.Core.Observables;
@@ -22,11 +21,7 @@ namespace MonoUI.Controls.WinForms
         }
 
         protected abstract void OnPaint(PaintEventArgs e);
-        public override void Invalidate() { _canvas.Invalidate(); }
         
-        public override IEnumerable<Control> GetControls()
-        {
-            yield return _canvas;
-        }
+        public override Control Control{get { return _canvas; }}
     }
 }

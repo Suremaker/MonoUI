@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 
 namespace MonoUI.Core.Observables
 {
@@ -42,9 +43,19 @@ namespace MonoUI.Core.Observables
 
     public static class PropertyExtensions
     {
-        public static TElement Set<TElement,T>(this TElement elem, Func<TElement, Property<T>> property, T value)
+        public static TElement Set<TElement, T>(this TElement elem, Func<TElement, Property<T>> property, T value)
         {
             property(elem).Value = value;
+            return elem;
+        }
+
+        public static TElement Set<TElement, T>(this TElement elem, Func<TElement, ObservableCollection<T>> property, params T[] values)
+        {
+            foreach (var value in values)
+            {
+                property(elem).Add(value);
+            }
+
             return elem;
         }
     }

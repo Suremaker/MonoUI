@@ -40,7 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicViewBuilder.cs" />
+    <Compile Include="Orientation.cs" />
     <Compile Include="Views\ComposedView.cs" />
+    <Compile Include="Views\IContainerView.cs" />
     <Compile Include="Views\IControlView.cs" />
     <Compile Include="Observables\ActionExtensions.cs" />
     <Compile Include="Observables\Properties.cs" />
@@ -48,6 +50,7 @@
     <Compile Include="Observables\ReadOnlyProperty.cs" />
     <Compile Include="Views\Alignment.cs" />
     <Compile Include="Views\HorizontalAlignment.cs" />
+    <Compile Include="Views\StretchOptions.cs" />
     <Compile Include="Views\VerticalAlignment.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

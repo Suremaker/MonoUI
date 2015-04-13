@@ -21,6 +21,9 @@ namespace MonoUI.Core
         protected TView View { get; private set; }
         protected event Action OnBeforeDispose;
 
+        public Property<Alignment> Alignment { get { return View.Alignment; } }
+        public Property<StretchOptions> Stretch { get { return View.Stretch; } }
+
         protected Control()
         {
             View = UIManager.Instance.CreateView<TView>();
