@@ -33,6 +33,7 @@ namespace MonoUI.Controls.WinForms
 
         public ReadOnlyProperty<Size> PreferredSize { get { return _preferredSize; } }
         public Property<Rectangle> ActualBounds { get; private set; }
+        public Property<ExpansionOptions> Expansion { get; private set; }
         public ILayoutPreferences LayoutPreferences { get { return _layoutPreferences; } }
 
         protected ControlView()
@@ -41,7 +42,8 @@ namespace MonoUI.Controls.WinForms
             ActualBounds = Properties.Create<Rectangle>();
             Alignment = Properties.Create<Alignment>(e => RequestLayout());
             Stretch = Properties.Create<StretchOptions>(e => RequestLayout());
-            _layoutPreferences = new LayoutPreferences(PreferredSize, Alignment, Stretch);
+            Expansion = Properties.Create<ExpansionOptions>(e => RequestLayout());
+            _layoutPreferences = new LayoutPreferences(PreferredSize, Alignment, Stretch, Expansion);
         }
 
         protected void RequestSizeRecalculation()

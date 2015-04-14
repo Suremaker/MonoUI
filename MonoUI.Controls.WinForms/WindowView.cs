@@ -15,6 +15,7 @@ namespace MonoUI.Controls.WinForms
         public Property<IControl> Content { get; private set; }
         public Property<Alignment> Alignment { get; private set; }
         public Property<StretchOptions> Stretch { get; private set; }
+        public Property<ExpansionOptions> Expansion { get; private set; }
         public Property<Alignment> ContentAlignment { get; private set; }
         public Property<StretchOptions> ContentStretch { get; private set; }
         public ILayoutPreferences ContentLayoutPreferences { get { return _contentLayoutPreferences; } }
@@ -28,8 +29,9 @@ namespace MonoUI.Controls.WinForms
             ContentAlignment = Properties.Create<Alignment>(e => LayoutChildren());
             ContentStretch = Properties.Create<StretchOptions>(e => LayoutChildren());
             Stretch = Properties.Create<StretchOptions>();
+            Expansion = Properties.Create<ExpansionOptions>();
             _preferredSize = Properties.Create<Size>();
-            _contentLayoutPreferences = new LayoutPreferences(_preferredSize, ContentAlignment, ContentStretch);
+            _contentLayoutPreferences = new LayoutPreferences(_preferredSize, ContentAlignment, ContentStretch,Properties.Create(ExpansionOptions.Fixed));
         }
 
         private void OnContentChange(PropertyChangedEvent<IControl> e)

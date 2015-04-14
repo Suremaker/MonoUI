@@ -7,5 +7,6 @@ namespace MonoUI.Core.Views
     {
         Property<Alignment> Alignment { get; }
         Property<StretchOptions> Stretch { get; }
+        Property<ExpansionOptions> Expansion { get;  }
     }
 }

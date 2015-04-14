@@ -23,6 +23,7 @@ namespace MonoUI.Core
 
         public Property<Alignment> Alignment { get { return View.Alignment; } }
         public Property<StretchOptions> Stretch { get { return View.Stretch; } }
+        public Property<ExpansionOptions> Expansion { get { return View.Expansion; } }
 
         protected Control()
         {

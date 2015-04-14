@@ -34,6 +34,7 @@ namespace ExampleApp1
             Root = new Window()
                 .Set(w => w.Content, new LinearContainer()
                     .Set(l => l.ContentAlignment, new Alignment(HorizontalAlignment.Right, VerticalAlignment.Top))
+                    .Set(l => l.ContentStretch, StretchOptions.Both)
                     .Set(l => l.Orientation, Orientation.Horizontal)
                     .Set(l => l.Spacing, Spacing.Minimal)
                     .Set(l => l.Items,
@@ -42,10 +43,11 @@ namespace ExampleApp1
                             .Set(l => l.Alignment, new Alignment(HorizontalAlignment.Right, VerticalAlignment.Top)),
                         new Label()
                             .Set(l => l.Text, "Worlddddd")
+                            .Set(l => l.Expansion, ExpansionOptions.Expand)
                             .Set(l => l.Alignment, new Alignment(HorizontalAlignment.Left, VerticalAlignment.Center)),
                         new Label()
                             .Set(l => l.Text, "Lalalaaaaa")
-                            .Set(l => l.Stretch, StretchOptions.Horizontal)
+                            .Set(l => l.Expansion, ExpansionOptions.Expand)
                             .Set(l => l.Alignment, new Alignment(HorizontalAlignment.Center, VerticalAlignment.Bottom))
                         ));
         }

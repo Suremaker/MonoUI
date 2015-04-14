@@ -35,7 +35,7 @@ namespace MonoUI.Controls.WinForms
             Stretch.Value = StretchOptions.Both;
             Items.CollectionChanged += OnCollectionChange;
             ActualBounds.Changed += e => LayoutChildren();
-            _contentLayoutPreferences = new LayoutPreferences(PreferredSize, ContentAlignment, ContentStretch);
+            _contentLayoutPreferences = new LayoutPreferences(PreferredSize, ContentAlignment, ContentStretch,Properties.Create(ExpansionOptions.Fixed));
             
         }
 
@@ -54,7 +54,7 @@ namespace MonoUI.Controls.WinForms
         {
             if (!Items.Any())
                 return new Size();
-            return LinearLayout.CalculateTotalSize(Orientation, Items.Select(item => item.GetWinFormsView().LayoutPreferences), GetSpacing());
+            return LinearLayout.CalculateTotalSize(Orientation, Items.Select(item => item.GetWinFormsView().LayoutPreferences).ToArray(), GetSpacing());
         }
 
         public void LayoutChildren()
@@ -63,7 +63,7 @@ namespace MonoUI.Controls.WinForms
                 Orientation,
                 ActualBounds.Value.Size,
                 ContentLayoutPreferences,
-                Items.Select(i => i.GetWinFormsView().LayoutPreferences), GetSpacing()).GetEnumerator();
+                Items.Select(i => i.GetWinFormsView().LayoutPreferences).ToArray(), GetSpacing()).GetEnumerator();
             foreach (var item in Items.Select(i => i.GetWinFormsView()))
             {
                 bounds.MoveNext();

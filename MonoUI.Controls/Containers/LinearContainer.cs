@@ -25,5 +25,6 @@ namespace MonoUI.Controls.Containers
         public Property<Orientation> Orientation { get { return View.Orientation; } }
         public Property<Spacing> Spacing { get { return View.Spacing; } }
         public Property<Alignment> ContentAlignment { get { return View.ContentAlignment; } }
+        public Property<StretchOptions> ContentStretch { get { return View.ContentStretch; } }
     }
 }
